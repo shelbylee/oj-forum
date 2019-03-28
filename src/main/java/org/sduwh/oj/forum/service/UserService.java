@@ -1,13 +1,16 @@
 package org.sduwh.oj.forum.service;
 
-import org.checkerframework.checker.units.qual.A;
 import org.sduwh.oj.forum.exception.ParamException;
 import org.sduwh.oj.forum.mapper.CommentMapper;
 import org.sduwh.oj.forum.mapper.TopicMapper;
 import org.sduwh.oj.forum.model.Comment;
 import org.sduwh.oj.forum.model.Topic;
+import org.sduwh.oj.forum.param.UserParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
+
+import javax.servlet.http.HttpServletRequest;
 
 @Service("userService")
 public class UserService {
@@ -34,4 +37,11 @@ public class UserService {
         }
         return true;
     }
+
+    public Integer getUserId(HttpServletRequest request) {
+        UserParam user = (UserParam) request.getSession().getAttribute("_user");
+        Integer userId = user.getUserId();
+        return userId;
+    }
+
 }

@@ -8,9 +8,11 @@ import org.sduwh.oj.forum.service.TopicService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
+
 @Slf4j
 @RestController
-@RequestMapping("/topic")
+@RequestMapping("/api/topic")
 public class TopicController {
 
     @Autowired
@@ -25,22 +27,22 @@ public class TopicController {
 
     // 创建话题
     @PostMapping("/create")
-    public ResultMessage create(TopicParam param) {
-        Topic topic = topicService.saveTopic(param);
+    public ResultMessage create(HttpServletRequest request, TopicParam param) {
+        Topic topic = topicService.saveTopic(request, param);
         return ResultMessage.success(topic);
     }
 
     // 编辑话题
     @PutMapping("/edit")
-    public ResultMessage edit(TopicParam param) {
-        Topic topic = topicService.editTopicById(param);
+    public ResultMessage edit(HttpServletRequest request, TopicParam param) {
+        Topic topic = topicService.editTopicById(request, param);
         return ResultMessage.success(topic);
     }
 
     // 删除话题
     @DeleteMapping("/delete")
-    public ResultMessage delete(TopicParam param) {
-        topicService.deleteTopicById(param);
+    public ResultMessage delete(HttpServletRequest request, TopicParam param) {
+        topicService.deleteTopicById(request, param);
         return ResultMessage.success();
     }
 }

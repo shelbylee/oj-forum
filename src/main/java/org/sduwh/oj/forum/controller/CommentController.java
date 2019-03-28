@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @RestController
-@RequestMapping("/comment")
+@RequestMapping("/api/comment")
 public class CommentController {
 
     @Autowired

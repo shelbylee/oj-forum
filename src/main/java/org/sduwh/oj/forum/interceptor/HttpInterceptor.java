@@ -1,8 +1,8 @@
-package org.sduwh.oj.forum.common;
+package org.sduwh.oj.forum.interceptor;
 
 import com.google.gson.Gson;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.Map;
 
 @Slf4j
-@Configuration
+@Component
 public class HttpInterceptor extends HandlerInterceptorAdapter {
 
     private static final String START_TIME = "requestStartTime";

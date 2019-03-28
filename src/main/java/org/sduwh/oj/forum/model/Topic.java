@@ -16,4 +16,7 @@ public class Topic {
     private String upIds;
     private Integer likeCount;
     private Integer viewCount;
+    private Integer problemId;
+    private Integer contestId;
+    private Integer visible;
 }

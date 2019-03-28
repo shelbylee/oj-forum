@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 
 @Service("topicService")
@@ -43,28 +44,30 @@ public class TopicService {
         return topicResponse;
     }
 
-    public Topic saveTopic(TopicParam param) {
+    public Topic saveTopic(HttpServletRequest request, TopicParam param) {
 
         Topic topic = new Topic();
         topic.setTitle(param.getTitle());
         topic.setContent(param.getContent());
-        topic.setUserId(param.getUserId());
+        topic.setUserId( userService.getUserId(request));
         topic.setCreatedAt(DateUtil.formatDateTime(new Date()));
         topic.setCommentCount(0);
         topic.setLikeCount(0);
         topic.setViewCount(0);
+        topic.setProblemId(param.getProblemId());
+        topic.setContestId(param.getContestId());
 
         topicMapper.insert(topic);
 
         return topic;
     }
 
-    public Topic editTopicById(TopicParam param) {
+    public Topic editTopicById(HttpServletRequest request, TopicParam param) {
 
         Integer topicId = param.getId();
         Topic topic = topicMapper.selectById(topicId);
 
-        Integer userId = param.getUserId();
+        Integer userId = userService.getUserId(request);
 
         String title = param.getTitle();
         String content = param.getContent();
@@ -80,9 +83,9 @@ public class TopicService {
         return topic;
     }
 
-    public void deleteTopicById(TopicParam param) {
+    public void deleteTopicById(HttpServletRequest request, TopicParam param) {
         Integer topicId = param.getId();
-        Integer userId = param.getUserId();
+        Integer userId = userService.getUserId(request);
 
         if (userService.compareUserAndTopicId(userId, topicId)) {
             topicMapper.deleteById(topicId);

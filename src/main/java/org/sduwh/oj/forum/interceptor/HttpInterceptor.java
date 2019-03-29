@@ -2,6 +2,7 @@ package org.sduwh.oj.forum.interceptor;
 
 import com.google.gson.Gson;
 import lombok.extern.slf4j.Slf4j;
+import org.sduwh.oj.forum.common.RequestHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
@@ -28,10 +29,7 @@ public class HttpInterceptor extends HandlerInterceptorAdapter {
 
     @Override
     public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception {
-/*        String url = request.getRequestURI();
-        long start = (Long)request.getAttribute(START_TIME);
-        long end = System.currentTimeMillis();
-        log.info("request finished. url:{}, cost:{}", url, end - start);*/
+        removeThreadLocalInfo();
     }
 
     @Override
@@ -40,5 +38,11 @@ public class HttpInterceptor extends HandlerInterceptorAdapter {
         long start = (Long)request.getAttribute(START_TIME);
         long end = System.currentTimeMillis();
         log.info("request completed. url:{}, params:{}", url, end - start);
+
+        removeThreadLocalInfo();
+    }
+
+    public void removeThreadLocalInfo() {
+        RequestHolder.remove();
     }
 }

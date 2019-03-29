@@ -8,15 +8,12 @@ import org.sduwh.oj.forum.model.Topic;
 import org.sduwh.oj.forum.param.UserParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 
 import javax.servlet.http.HttpServletRequest;
 
 @Service("userService")
 public class UserService {
 
-    @Autowired
-    private CacheService cacheService;
     @Autowired
     private TopicMapper topicMapper;
     @Autowired
@@ -37,11 +34,4 @@ public class UserService {
         }
         return true;
     }
-
-    public Integer getUserId(HttpServletRequest request) {
-        UserParam user = (UserParam) request.getSession().getAttribute("_user");
-        Integer userId = user.getUserId();
-        return userId;
-    }
-
 }

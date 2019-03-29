@@ -2,6 +2,7 @@ package org.sduwh.oj.forum.service;
 
 import com.google.gson.Gson;
 import org.sduwh.oj.forum.common.CacheKeyConstants;
+import org.sduwh.oj.forum.common.RequestHolder;
 import org.sduwh.oj.forum.mapper.TopicMapper;
 import org.sduwh.oj.forum.model.Topic;
 import org.sduwh.oj.forum.param.TopicParam;
@@ -11,7 +12,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 
 @Service("topicService")
@@ -44,12 +44,12 @@ public class TopicService {
         return topicResponse;
     }
 
-    public Topic saveTopic(HttpServletRequest request, TopicParam param) {
+    public Topic saveTopic(TopicParam param) {
 
         Topic topic = new Topic();
         topic.setTitle(param.getTitle());
         topic.setContent(param.getContent());
-        topic.setUserId( userService.getUserId(request));
+        topic.setUserId(RequestHolder.getCurrentUser().getUserId());
         topic.setCreatedAt(DateUtil.formatDateTime(new Date()));
         topic.setCommentCount(0);
         topic.setLikeCount(0);
@@ -62,12 +62,12 @@ public class TopicService {
         return topic;
     }
 
-    public Topic editTopicById(HttpServletRequest request, TopicParam param) {
+    public Topic editTopicById(TopicParam param) {
 
         Integer topicId = param.getId();
         Topic topic = topicMapper.selectById(topicId);
 
-        Integer userId = userService.getUserId(request);
+        Integer userId = RequestHolder.getCurrentUser().getUserId();
 
         String title = param.getTitle();
         String content = param.getContent();
@@ -83,9 +83,9 @@ public class TopicService {
         return topic;
     }
 
-    public void deleteTopicById(HttpServletRequest request, TopicParam param) {
+    public void deleteTopicById(TopicParam param) {
         Integer topicId = param.getId();
-        Integer userId = userService.getUserId(request);
+        Integer userId = RequestHolder.getCurrentUser().getUserId();
 
         if (userService.compareUserAndTopicId(userId, topicId)) {
             topicMapper.deleteById(topicId);

@@ -18,7 +18,11 @@ public class CommentParam {
     @NotNull(message = "必须提供评论所在的话题")
     private Integer topicId;
 
+    private Integer userId;
+
     private String createdAt;
+
+    private String updatedAt;
 
     private Integer commentId;
 }

@@ -17,9 +17,9 @@ public class TopicController {
     private TopicService topicService;
 
     // 查询话题
-    @GetMapping("/{id}")
-    public ResultMessage select(@PathVariable Integer id) {
-        Topic topic = topicService.getTopicById(id);
+    @GetMapping()
+    public ResultMessage select(@RequestParam Integer id) {
+        TopicParam topic = topicService.getTopicById(id);
         return ResultMessage.success(topic);
     }
 

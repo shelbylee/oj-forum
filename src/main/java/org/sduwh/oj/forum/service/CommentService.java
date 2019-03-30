@@ -1,17 +1,25 @@
 package org.sduwh.oj.forum.service;
 
 import com.google.common.base.Preconditions;
+import com.google.common.base.Strings;
+import com.google.common.reflect.TypeToken;
+import org.sduwh.oj.forum.common.CacheKeyConstants;
 import org.sduwh.oj.forum.common.RequestHolder;
 import org.sduwh.oj.forum.mapper.CommentMapper;
 import org.sduwh.oj.forum.model.Comment;
 import org.sduwh.oj.forum.model.Topic;
 import org.sduwh.oj.forum.param.CommentParam;
 import org.sduwh.oj.forum.util.DateUtil;
+import org.sduwh.oj.forum.util.JsonUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
+import java.lang.reflect.Type;
 import java.util.Date;
+import java.util.List;
 
 @Service("commentService")
 public class CommentService {
@@ -22,7 +30,6 @@ public class CommentService {
     private UserService userService;
     @Autowired
     private TopicService topicService;
-
     @Resource
     private CommentMapper commentMapper;
 
@@ -35,7 +42,7 @@ public class CommentService {
         comment.setUserId(RequestHolder.getCurrentUser().getUserId());
         comment.setCreatedAt(DateUtil.formatDateTime(new Date()));
 
-        Topic topic = topicService.getTopicById(param.getTopicId());
+        Topic topic = topicService.getTopicByIdWithoutComment(param.getTopicId());
         Preconditions.checkNotNull(topic, "你晚了一步，话题可能已经被删除了");
 
         commentMapper.insert(comment);
@@ -72,5 +79,21 @@ public class CommentService {
         if (userService.compareUserAndCommentId(userId, commentId)) {
             commentMapper.deleteById(commentId);
         }
+    }
+
+    public List<CommentParam> selectByTopicId(Integer topicId) {
+
+        List<CommentParam> comments;
+
+        String cacheComments = cacheService.getFromCache(CacheKeyConstants.FORUM_COMMENTS_KEY, String.valueOf(topicId));
+
+        if (Strings.isNullOrEmpty(cacheComments)) {
+            comments = commentMapper.selectByTopicId(topicId);
+            cacheService.saveCache(JsonUtil.objectToJson(comments), 3600, CacheKeyConstants.FORUM_COMMENTS_KEY, String.valueOf(topicId));
+        } else {
+            Type type = new TypeToken<List<CommentParam>>() {}.getType();
+            comments = JsonUtil.jsonToObject(cacheComments, type);
+        }
+        return comments;
     }
 }

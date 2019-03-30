@@ -5,6 +5,7 @@ import lombok.ToString;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.util.List;
 
 @Data
 @ToString
@@ -22,6 +23,8 @@ public class TopicParam {
 
     @NotNull(message = "用户ID不能为空")
     private Integer userId;
+
+    private List<CommentParam> comments;
 
     private Integer commentCount;
 

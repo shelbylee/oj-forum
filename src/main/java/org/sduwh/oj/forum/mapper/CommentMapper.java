@@ -14,7 +14,7 @@ public interface CommentMapper {
     @Select("SELECT * FROM comment WHERE topic_id = #{topicId}")
     @Results(id = "commentsByTopicId", value = {
             @Result(property = "id", column = "id"),
-            @Result(property = "content", column = "title"),
+            @Result(property = "content", column = "content"),
             @Result(property = "userId", column = "user_id"),
             @Result(property = "createdAt", column = "create_time"),
             @Result(property = "updatedAt", column = "modify_time"),

@@ -5,11 +5,8 @@ import org.sduwh.oj.forum.mapper.CommentMapper;
 import org.sduwh.oj.forum.mapper.TopicMapper;
 import org.sduwh.oj.forum.model.Comment;
 import org.sduwh.oj.forum.model.Topic;
-import org.sduwh.oj.forum.param.UserParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import javax.servlet.http.HttpServletRequest;
 
 @Service("userService")
 public class UserService {

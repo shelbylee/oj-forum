@@ -43,4 +43,10 @@ public class TopicController {
         topicService.deleteTopicById(param);
         return ResultMessage.success();
     }
+
+    @GetMapping("/vote")
+    public ResultMessage vote(@RequestParam Integer id) {
+        Integer likeCount = topicService.vote(id);
+        return ResultMessage.success(likeCount);
+    }
 }

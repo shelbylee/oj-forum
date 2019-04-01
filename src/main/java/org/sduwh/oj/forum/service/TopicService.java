@@ -72,7 +72,7 @@ public class TopicService {
         Topic topic = new Topic();
         topic.setTitle(param.getTitle());
         topic.setContent(param.getContent());
-        topic.setUserId(RequestHolder.getCurrentUser().getUserId());
+        topic.setUserId(userService.getUserId());
         topic.setCreatedAt(DateUtil.formatDateTime(new Date()));
         topic.setCommentCount(0);
         topic.setLikeCount(0);
@@ -90,7 +90,7 @@ public class TopicService {
         Integer topicId = param.getId();
         Topic topic = topicMapper.selectById(topicId);
 
-        Integer userId = RequestHolder.getCurrentUser().getUserId();
+        Integer userId = userService.getUserId();
 
         String title = param.getTitle();
         String content = param.getContent();
@@ -108,7 +108,7 @@ public class TopicService {
 
     public void deleteTopicById(TopicParam param) {
         Integer topicId = param.getId();
-        Integer userId = RequestHolder.getCurrentUser().getUserId();
+        Integer userId = userService.getUserId();
 
         if (userService.compareUserAndTopicId(userId, topicId)) {
             topicMapper.deleteById(topicId);
@@ -117,7 +117,7 @@ public class TopicService {
 
     public Integer vote(Integer topicId) {
 
-        String userId = String.valueOf(RequestHolder.getCurrentUser().getUserId());
+        String userId = String.valueOf(userService.getUserId());
         Topic topic = topicMapper.selectById(topicId);
 
         // 判断话题是否还存在

@@ -1,5 +1,6 @@
 package org.sduwh.oj.forum.service;
 
+import org.sduwh.oj.forum.common.RequestHolder;
 import org.sduwh.oj.forum.exception.ParamException;
 import org.sduwh.oj.forum.mapper.CommentMapper;
 import org.sduwh.oj.forum.mapper.TopicMapper;
@@ -30,5 +31,13 @@ public class UserService {
             throw new ParamException("您没有权限修改该评论！");
         }
         return true;
+    }
+
+    public String getUserType() {
+        return RequestHolder.getCurrentUser().getUserType();
+    }
+
+    public Integer getUserId() {
+        return RequestHolder.getCurrentUser().getUserId();
     }
 }

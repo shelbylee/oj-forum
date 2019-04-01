@@ -4,7 +4,6 @@ import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.common.reflect.TypeToken;
 import org.sduwh.oj.forum.common.CacheKeyConstants;
-import org.sduwh.oj.forum.common.RequestHolder;
 import org.sduwh.oj.forum.mapper.CommentMapper;
 import org.sduwh.oj.forum.model.Comment;
 import org.sduwh.oj.forum.model.Topic;
@@ -13,8 +12,6 @@ import org.sduwh.oj.forum.util.DateUtil;
 import org.sduwh.oj.forum.util.JsonUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
-import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
 import java.lang.reflect.Type;
@@ -39,7 +36,7 @@ public class CommentService {
         comment.setCommentId(param.getCommentId());
         comment.setTopicId(param.getTopicId());
         comment.setContent(param.getContent());
-        comment.setUserId(RequestHolder.getCurrentUser().getUserId());
+        comment.setUserId(userService.getUserId());
         comment.setCreatedAt(DateUtil.formatDateTime(new Date()));
 
         Topic topic = topicService.getTopicByIdWithoutComment(param.getTopicId());
@@ -52,7 +49,7 @@ public class CommentService {
 
     public Comment editCommentById(CommentParam param) {
 
-        Integer userId = RequestHolder.getCurrentUser().getUserId();
+        Integer userId = userService.getUserId();
         String content = param.getContent();
         Integer commentId = param.getId();
 
@@ -71,7 +68,7 @@ public class CommentService {
 
     public void deleteCommentById(CommentParam param) {
         Integer commentId = param.getId();
-        Integer userId = RequestHolder.getCurrentUser().getUserId();
+        Integer userId = userService.getUserId();
 
         Comment comment = commentMapper.selectById(commentId);
         Preconditions.checkNotNull(comment, "这个评论可能已经被删除了，多发点对别人有帮助的评论吧");

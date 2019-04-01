@@ -30,12 +30,6 @@ public interface TopicMapper {
     @Options(useGeneratedKeys = true, keyProperty = "id", keyColumn = "id")
     void insert(Topic topic);
 
-    //    @Update("UPDATE topic SET" +
-//            "    title = #{title}," +
-//            "    content = #{content}," +
-//            "    modify_time = #{updatedAt}" +
-//            "WHERE" +
-//            "    id = #{id}")
     @UpdateProvider(type = TopicProvider.class, method = "update")
     int update(Topic topic);
 

@@ -22,6 +22,7 @@ import java.util.Objects;
 @Component
 public class SpringRestTemplateUtil {
 
+    // TODO: 改成配置信息
     private static final String OJ_SSO_URL = "http://localhost:8000/api/sso";
 
     @Autowired

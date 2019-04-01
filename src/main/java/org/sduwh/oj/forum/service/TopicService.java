@@ -100,7 +100,7 @@ public class TopicService {
             topic.setContent(content);
             topic.setUpdatedAt(DateUtil.formatDateTime(new Date()));
 
-            topicMapper.update(topic);
+            this.update(topic);
         }
 
         return topic;
@@ -112,6 +112,7 @@ public class TopicService {
 
         if (userService.compareUserAndTopicId(userId, topicId)) {
             topicMapper.deleteById(topicId);
+            cacheService.delCache(CacheKeyConstants.FORUM_TOPIC_KEY, String.valueOf(topicId));
         }
     }
 

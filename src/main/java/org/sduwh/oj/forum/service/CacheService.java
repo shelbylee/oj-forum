@@ -58,6 +58,23 @@ public class CacheService {
         }
     }
 
+    public void delCache(CacheKeyConstants prefix, String... keys) {
+
+        // TODO: try-with-resources
+
+        Jedis jedis = null;
+
+        try {
+            String cacheKey = generateCacheKey(prefix, keys);
+            jedis = redisPool.instance();
+            jedis.del(cacheKey);
+        } catch (Exception e) {
+            log.error("delete from cache exception, prefix:{}, keys:{}", prefix.name(), gson.toJson(keys));
+        } finally {
+            redisPool.safeClose(jedis);
+        }
+    }
+
     private String generateCacheKey(CacheKeyConstants prefix, String... keys) {
         String key = prefix.name();
         if (keys != null && keys.length > 0) {

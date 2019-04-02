@@ -1,5 +1,6 @@
 package org.sduwh.oj.forum.util;
 
+import com.google.common.base.Preconditions;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -11,6 +12,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestTemplate;
 
 import javax.servlet.http.Cookie;
@@ -36,6 +38,8 @@ public class SpringRestTemplateUtil {
 
         Cookie[] cookies = request.getCookies();
         List<String> cookieList = new ArrayList<>();
+
+        Preconditions.checkNotNull(cookies, "Cookie is null!");
 
         for (Cookie cookie : cookies) {
             cookieList.add(cookie.getName()+"="+cookie.getValue());

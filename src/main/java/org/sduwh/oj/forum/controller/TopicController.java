@@ -25,7 +25,7 @@ public class TopicController {
 
     // 创建话题
     @PostMapping("/create")
-    public ResultMessage create(TopicParam param) {
+    public ResultMessage create(@RequestBody TopicParam param) {
         Topic topic = topicService.saveTopic(param);
         return ResultMessage.success(topic);
     }

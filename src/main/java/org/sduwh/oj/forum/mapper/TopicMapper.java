@@ -30,9 +30,13 @@ public interface TopicMapper {
     @ResultMap("topic")
     List<Topic> selectAll();
 
-    @Select("SELECT * FROM topic WHERE problem_id = #{id}")
+    @Select("SELECT * FROM topic WHERE problem_id = #{problemId} and contest_id = #{contestId}")
     @ResultMap("topic")
-    List<Topic> selectByProblemId(@Param("id") Integer id);
+    List<Topic> selectByProblemContestId(@Param("contestId") Integer contestId, @Param("problemId") Integer problemId);
+
+    @Select("SELECT * FROM topic WHERE problem_id = #{problemId}")
+    @ResultMap("topic")
+    List<Topic> selectByProblemId(@Param("problemId") Integer problemId);
 
     @Insert("INSERT INTO topic (" +
             "    title, content, create_time, user_id, comment_count, problem_id, contest_id, contest_creator_id" +

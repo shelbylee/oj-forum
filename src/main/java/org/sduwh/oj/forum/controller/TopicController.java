@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.sduwh.oj.forum.common.ResultMessage;
 import org.sduwh.oj.forum.model.Topic;
 import org.sduwh.oj.forum.param.TopicParam;
+import org.sduwh.oj.forum.service.ProblemService;
 import org.sduwh.oj.forum.service.TopicService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -17,6 +18,8 @@ public class TopicController {
 
     @Autowired
     private TopicService topicService;
+    @Autowired
+    private ProblemService problemService;
 
     // 查询话题
     @GetMapping()
@@ -33,7 +36,7 @@ public class TopicController {
 
     @GetMapping("/problem")
     public ResultMessage selectByProblemId(@RequestParam Integer id) {
-        List<TopicParam> topicList = topicService.getTopicByProblemId(id);
+        List<TopicParam> topicList = problemService.getTopicsByProblemId(id);
         return ResultMessage.success(topicList);
     }
 

@@ -7,7 +7,6 @@ import org.sduwh.oj.forum.exception.ParamException;
 import org.sduwh.oj.forum.mapper.TopicMapper;
 import org.sduwh.oj.forum.model.Topic;
 import org.sduwh.oj.forum.param.CommentParam;
-import org.sduwh.oj.forum.param.OjContestParam;
 import org.sduwh.oj.forum.param.TopicParam;
 import org.sduwh.oj.forum.util.DateUtil;
 import org.sduwh.oj.forum.util.IpUtil;
@@ -67,18 +66,6 @@ public class TopicService {
         return topicParamList;
     }
 
-    public List<TopicParam> getTopicByProblemId(Integer problemId) {
-        List<TopicParam> topicParamList = new ArrayList<>();
-
-        List<Topic> topics = topicMapper.selectByProblemId(problemId);
-
-        for (Topic topic : topics) {
-            topicParamList.add(getTopicById(topic.getId()));
-        }
-
-        return topicParamList;
-    }
-
     public Topic getTopicByIdWithoutComment(Integer topicId) {
 
         String cacheTopic = cacheService.getFromCache(CacheKeyConstants.FORUM_TOPIC_KEY, String.valueOf(topicId));
@@ -96,30 +83,12 @@ public class TopicService {
         return topicResponse;
     }
 
-    public TopicParam getTopicFromContest(Integer topicId, Integer contestId) {
-
-        TopicParam topic;
-
-        // 先判断用户身份
-        Integer userId = userService.getUserId();
-        OjContestParam.OjData.CreatorData creatorData = restTemplateUtil.getContestCreatorData(contestId);
-        Integer creatorId = creatorData.getId();
-
-        // 如果是contest创建者，则可以看到所有帖子，无论contest的discuss的状态
-        if (userId.equals(creatorId)) {
-            topic = getTopicById(topicId);
-        } else { // 如果非contest的创建者，则只能看到自己发的帖子
-            topic = getOwnTopic(userId, topicId);
-        }
-
-        return topic;
-    }
-
     /**
      * 让用户只能获取自己所发的帖子
+     *
      * @return
      */
-    private TopicParam getOwnTopic(Integer userId, Integer topicId) {
+    public TopicParam getOwnTopic(Integer userId, Integer topicId) {
 
         TopicParam topicParam;
 
@@ -145,36 +114,7 @@ public class TopicService {
         return topic;
     }
 
-    public Topic saveContestTopic(TopicParam param) {
-
-        Topic topic = new Topic();
-
-        // 1为允许
-        if (param.getDiscussStatus() == 1) {
-            // 正常创建topic
-            buildTopic(param, topic);
-            topicMapper.insert(topic);
-        }
-        // 0为禁止
-        else if (param.getDiscussStatus() == 0) {
-            // 判断用户身份
-            String userType = userService.getUserType();
-            // 如果用户是普通用户，则发帖仅createdById可见
-            // user type:    Regular User, Admin, Super Admin
-            // 方便测试，暂时先写成Super Admin
-            if (userType.equals("Super Admin")) {
-                OjContestParam.OjData.CreatorData creatorData = restTemplateUtil.getContestCreatorData(param.getContestId());
-                Integer contestCreatorId = creatorData.getId();
-                buildTopic(param, topic);
-                topic.setContestCreatorId(contestCreatorId);
-                topicMapper.insert(topic);
-            }
-        }
-
-        return topic;
-    }
-
-    private void buildTopic(TopicParam from, Topic to) {
+    public void buildTopic(TopicParam from, Topic to) {
         to.setTitle(from.getTitle());
         to.setContent(from.getContent());
         to.setUserId(userService.getUserId());

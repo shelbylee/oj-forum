@@ -13,4 +13,6 @@ public class UserParam {
 
     private String userType;
 
+    private String token;
+
 }

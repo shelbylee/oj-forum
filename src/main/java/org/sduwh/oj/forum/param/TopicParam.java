@@ -37,4 +37,7 @@ public class TopicParam {
     private Integer contestId;
 
     private Integer visible;
+
+    // TODO: discussStatus: 1 允许 discussStatus: 0 禁止
+    private Integer discussStatus;
 }

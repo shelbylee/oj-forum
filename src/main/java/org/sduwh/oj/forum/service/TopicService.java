@@ -7,10 +7,12 @@ import org.sduwh.oj.forum.exception.ParamException;
 import org.sduwh.oj.forum.mapper.TopicMapper;
 import org.sduwh.oj.forum.model.Topic;
 import org.sduwh.oj.forum.param.CommentParam;
+import org.sduwh.oj.forum.param.OjContestParam;
 import org.sduwh.oj.forum.param.TopicParam;
 import org.sduwh.oj.forum.util.DateUtil;
 import org.sduwh.oj.forum.util.IpUtil;
 import org.sduwh.oj.forum.util.JsonUtil;
+import org.sduwh.oj.forum.util.SpringRestTemplateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -29,6 +31,8 @@ public class TopicService {
     private UserService userService;
     @Autowired
     private CommentService commentService;
+    @Autowired
+    private SpringRestTemplateUtil restTemplateUtil;
 
     @Resource
     private TopicMapper topicMapper;
@@ -67,22 +71,94 @@ public class TopicService {
         return topicResponse;
     }
 
-    public Topic saveTopic(TopicParam param) {
+    public TopicParam getTopicFromContest(Integer topicId, Integer contestId) {
 
-        Topic topic = new Topic();
-        topic.setTitle(param.getTitle());
-        topic.setContent(param.getContent());
-        topic.setUserId(userService.getUserId());
-        topic.setCreatedAt(DateUtil.formatDateTime(new Date()));
-        topic.setCommentCount(0);
-        topic.setLikeCount(0);
-        topic.setViewCount(0);
-        topic.setProblemId(param.getProblemId());
-        topic.setContestId(param.getContestId());
+        TopicParam topic;
 
-        topicMapper.insert(topic);
+        // 先判断用户身份
+        Integer userId = userService.getUserId();
+        OjContestParam.OjData.CreatorData creatorData = restTemplateUtil.getContestCreatorData(contestId);
+        Integer creatorId = creatorData.getId();
+
+        // 如果是contest创建者，则可以看到所有帖子，无论contest的discuss的状态
+        if (userId.equals(creatorId)) {
+            topic = getTopicById(topicId);
+        } else { // 如果非contest的创建者，则只能看到自己发的帖子
+            topic = getOwnTopic(userId, topicId);
+        }
 
         return topic;
+    }
+
+    /**
+     * 让用户只能获取自己所发的帖子
+     * @return
+     */
+    private TopicParam getOwnTopic(Integer userId, Integer topicId) {
+
+        TopicParam topicParam;
+
+        Topic topic = getTopicByIdWithoutComment(topicId);
+        if (topic.getUserId().equals(userId)) {
+            List<CommentParam> comments = commentService.selectByTopicId(topicId);
+            topic = addViewCount(topic);
+            topicParam = JsonUtil.jsonToObject(JsonUtil.objectToJson(topic), TopicParam.class);
+            Preconditions.checkNotNull(topicParam);
+            if (!StringUtils.isEmpty(comments))
+                topicParam.setComments(comments);
+        } else {
+            return null;
+        }
+
+        return topicParam;
+    }
+
+    public Topic saveTopic(TopicParam param) {
+        Topic topic = new Topic();
+        buildTopic(param, topic);
+        topicMapper.insert(topic);
+        return topic;
+    }
+
+    public Topic saveContestTopic(TopicParam param) {
+
+        Topic topic = new Topic();
+
+        // 1为允许
+        if (param.getDiscussStatus() == 1) {
+            // 正常创建topic
+            buildTopic(param, topic);
+            topicMapper.insert(topic);
+        }
+        // 0为禁止
+        else if (param.getDiscussStatus() == 0) {
+            // 判断用户身份
+            String userType = userService.getUserType();
+            // 如果用户是普通用户，则发帖仅createdById可见
+            // user type:    Regular User, Admin, Super Admin
+            // 方便测试，暂时先写成Super Admin
+            if (userType.equals("Super Admin")) {
+                OjContestParam.OjData.CreatorData creatorData = restTemplateUtil.getContestCreatorData(param.getContestId());
+                Integer contestCreatorId = creatorData.getId();
+                buildTopic(param, topic);
+                topic.setContestCreatorId(contestCreatorId);
+                topicMapper.insert(topic);
+            }
+        }
+
+        return topic;
+    }
+
+    private void buildTopic(TopicParam from, Topic to) {
+        to.setTitle(from.getTitle());
+        to.setContent(from.getContent());
+        to.setUserId(userService.getUserId());
+        to.setCreatedAt(DateUtil.formatDateTime(new Date()));
+        to.setCommentCount(0);
+        to.setLikeCount(0);
+        to.setViewCount(0);
+        to.setProblemId(from.getProblemId());
+        to.setContestId(from.getContestId());
     }
 
     public Topic editTopicById(TopicParam param) {

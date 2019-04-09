@@ -7,5 +7,4 @@ import lombok.ToString;
 @ToString
 public class OjResponseParam {
     private String error;
-    private OjData data;
 }

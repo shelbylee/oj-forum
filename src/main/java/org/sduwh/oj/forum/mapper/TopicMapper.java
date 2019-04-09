@@ -23,9 +23,9 @@ public interface TopicMapper {
     Topic selectById(@Param("id") Integer id);
 
     @Insert("INSERT INTO topic (" +
-            "    title, content, create_time, user_id, comment_count, problem_id, contest_id" +
+            "    title, content, create_time, user_id, comment_count, problem_id, contest_id, contest_creator_id" +
             ") VALUES (" +
-            "    #{title}, #{content}, #{createdAt}, #{userId}, #{commentCount}, #{problemId}, #{contestId}" +
+            "    #{title}, #{content}, #{createdAt}, #{userId}, #{commentCount}, #{problemId}, #{contestId}, #{contestCreatorId}" +
             ")")
     @Options(useGeneratedKeys = true, keyProperty = "id", keyColumn = "id")
     void insert(Topic topic);

@@ -19,4 +19,5 @@ public class Topic {
     private Integer problemId;
     private Integer contestId;
     private Integer visible;
+    private Integer contestCreatorId;
 }

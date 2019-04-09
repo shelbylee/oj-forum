@@ -24,13 +24,15 @@ public interface TopicMapper {
             @Result(property = "problemId", column = "problem_id"),
             @Result(property = "contestCreatorId", column = "contest_creator_id"),
     })
-    @Options(useGeneratedKeys = true, keyProperty = "id", keyColumn = "id")
     Topic selectById(@Param("id") Integer id);
 
     @Select("SELECT * FROM topic ")
     @ResultMap("topic")
-    @Options(useGeneratedKeys = true, keyProperty = "id", keyColumn = "id")
     List<Topic> selectAll();
+
+    @Select("SELECT * FROM topic WHERE problem_id = #{id}")
+    @ResultMap("topic")
+    List<Topic> selectByProblemId(@Param("id") Integer id);
 
     @Insert("INSERT INTO topic (" +
             "    title, content, create_time, user_id, comment_count, problem_id, contest_id, contest_creator_id" +

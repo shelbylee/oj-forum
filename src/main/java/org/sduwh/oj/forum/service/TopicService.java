@@ -67,6 +67,18 @@ public class TopicService {
         return topicParamList;
     }
 
+    public List<TopicParam> getTopicByProblemId(Integer problemId) {
+        List<TopicParam> topicParamList = new ArrayList<>();
+
+        List<Topic> topics = topicMapper.selectByProblemId(problemId);
+
+        for (Topic topic : topics) {
+            topicParamList.add(getTopicById(topic.getId()));
+        }
+
+        return topicParamList;
+    }
+
     public Topic getTopicByIdWithoutComment(Integer topicId) {
 
         String cacheTopic = cacheService.getFromCache(CacheKeyConstants.FORUM_TOPIC_KEY, String.valueOf(topicId));

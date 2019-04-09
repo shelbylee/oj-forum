@@ -27,8 +27,14 @@ public class TopicController {
 
     @GetMapping("/select")
     public ResultMessage selectAll() {
-        List<TopicParam> topic = topicService.getAllTopic();
-        return ResultMessage.success(topic);
+        List<TopicParam> topicList = topicService.getAllTopic();
+        return ResultMessage.success(topicList);
+    }
+
+    @GetMapping("/problem")
+    public ResultMessage selectByProblemId(@RequestParam Integer id) {
+        List<TopicParam> topicList = topicService.getTopicByProblemId(id);
+        return ResultMessage.success(topicList);
     }
 
     // 创建话题

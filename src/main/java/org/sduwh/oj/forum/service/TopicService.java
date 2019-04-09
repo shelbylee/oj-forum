@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -52,6 +53,18 @@ public class TopicService {
             topicWithComments.setComments(comments);
 
         return topicWithComments;
+    }
+
+    public List<TopicParam> getAllTopic() {
+        List<TopicParam> topicParamList = new ArrayList<>();
+
+        List<Topic> topics = topicMapper.selectAll();
+
+        for (Topic topic : topics) {
+            topicParamList.add(getTopicById(topic.getId()));
+        }
+
+        return topicParamList;
     }
 
     public Topic getTopicByIdWithoutComment(Integer topicId) {

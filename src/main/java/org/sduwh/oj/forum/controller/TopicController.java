@@ -8,6 +8,8 @@ import org.sduwh.oj.forum.service.TopicService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @Slf4j
 @RestController
 @RequestMapping("/api/topic")
@@ -20,6 +22,12 @@ public class TopicController {
     @GetMapping()
     public ResultMessage select(@RequestParam Integer id) {
         TopicParam topic = topicService.getTopicById(id);
+        return ResultMessage.success(topic);
+    }
+
+    @GetMapping("/select")
+    public ResultMessage selectAll() {
+        List<TopicParam> topic = topicService.getAllTopic();
         return ResultMessage.success(topic);
     }
 

@@ -3,6 +3,8 @@ package org.sduwh.oj.forum.mapper;
 import org.apache.ibatis.annotations.*;
 import org.sduwh.oj.forum.model.Topic;
 
+import java.util.List;
+
 @Mapper
 public interface TopicMapper {
 
@@ -18,9 +20,17 @@ public interface TopicMapper {
             @Result(property = "upIds", column = "up_ids"),
             @Result(property = "likeCount", column = "like_count"),
             @Result(property = "viewCount", column = "view_count"),
+            @Result(property = "contestId", column = "contest_id"),
+            @Result(property = "problemId", column = "problem_id"),
+            @Result(property = "contestCreatorId", column = "contest_creator_id"),
     })
     @Options(useGeneratedKeys = true, keyProperty = "id", keyColumn = "id")
     Topic selectById(@Param("id") Integer id);
+
+    @Select("SELECT * FROM topic ")
+    @ResultMap("topic")
+    @Options(useGeneratedKeys = true, keyProperty = "id", keyColumn = "id")
+    List<Topic> selectAll();
 
     @Insert("INSERT INTO topic (" +
             "    title, content, create_time, user_id, comment_count, problem_id, contest_id, contest_creator_id" +

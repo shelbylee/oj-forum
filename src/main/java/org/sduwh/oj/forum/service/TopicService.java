@@ -31,8 +31,6 @@ public class TopicService {
     private UserService userService;
     @Autowired
     private CommentService commentService;
-    @Autowired
-    private SpringRestTemplateUtil restTemplateUtil;
 
     @Resource
     private TopicMapper topicMapper;
@@ -208,6 +206,23 @@ public class TopicService {
     public void update(Topic topic) {
         topicMapper.update(topic);
         cacheService.saveCache(JsonUtil.objectToJson(topic), 3600, CacheKeyConstants.FORUM_TOPIC_KEY, String.valueOf(topic.getId()));
+    }
+
+    /**
+     * 排序
+     *
+     * @param sortType 0：最新发表 1：Most posts（最多评论） 2：Most votes（最多投票）
+     */
+    public void sort(Integer sortType) {
+        // TODO:
+        if (sortType == 0) {
+
+        } else if (sortType == 1) {
+
+        } else if (sortType == 2) {
+
+        } else
+            throw new ParamException("无效的参数");
     }
 
 }

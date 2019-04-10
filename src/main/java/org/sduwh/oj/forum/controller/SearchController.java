@@ -14,7 +14,7 @@ import java.util.List;
 
 @Slf4j
 @RestController
-@RequestMapping("/api/topic")
+@RequestMapping("/api/topics")
 public class SearchController {
 
     @Autowired

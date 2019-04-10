@@ -38,6 +38,18 @@ public interface TopicMapper {
     @ResultMap("topic")
     List<Topic> selectByProblemId(@Param("problemId") Integer problemId);
 
+    @Select("SELECT * FROM topic WHERE problem_id is null and ( title like #{keywords} or content like #{keywords})")
+    @ResultMap("topic")
+    List<Topic> searchByKeywords(@Param("keywords") String keywords);
+
+    @Select("SELECT * FROM topic WHERE problem_id = #{problemId} and ( title like #{keywords} or content like #{keywords})")
+    @ResultMap("topic")
+    List<Topic> searchByKeywordsWithProblemId(@Param("keywords") String keywords, @Param("problemId") Integer problemId);
+
+    @Select("SELECT * FROM topic WHERE problem_id = #{problemId} and ( title like #{keywords} or content like #{keywords})")
+    @ResultMap("topic")
+    List<Topic> searchByKeywordsWithProblemAndContestId(@Param("keywords") String keywords, @Param("problemId") Integer problemId, @Param("contestId") Integer contestId);
+
     @Insert("INSERT INTO topic (" +
             "    title, content, create_time, user_id, comment_count, problem_id, contest_id, contest_creator_id" +
             ") VALUES (" +

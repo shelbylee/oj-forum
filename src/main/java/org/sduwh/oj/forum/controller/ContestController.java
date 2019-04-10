@@ -1,7 +1,6 @@
 package org.sduwh.oj.forum.controller;
 
 import lombok.extern.slf4j.Slf4j;
-import org.checkerframework.checker.units.qual.A;
 import org.sduwh.oj.forum.common.ResultMessage;
 import org.sduwh.oj.forum.model.Topic;
 import org.sduwh.oj.forum.param.TopicParam;

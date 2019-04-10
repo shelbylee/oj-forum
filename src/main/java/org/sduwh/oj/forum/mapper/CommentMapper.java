@@ -9,6 +9,17 @@ import java.util.List;
 @Mapper
 public interface CommentMapper {
 
+    @Select("SELECT * FROM comment WHERE id = #{id}")
+    @Results(id = "comment", value = {
+            @Result(property = "id", column = "id"),
+            @Result(property = "content", column = "title"),
+            @Result(property = "topicId", column = "topic_id"),
+            @Result(property = "userId", column = "user_id"),
+            @Result(property = "createdAt", column = "create_time"),
+            @Result(property = "updatedAt", column = "modify_time"),
+            @Result(property = "commentId", column = "comment_id"),
+            @Result(property = "upIds", column = "up_ids"),
+    })
     Comment selectById(@Param("id") Integer id);
 
     @Select("SELECT * FROM comment WHERE topic_id = #{topicId}")
@@ -31,7 +42,11 @@ public interface CommentMapper {
     @Options(useGeneratedKeys = true, keyProperty = "id", keyColumn = "id")
     void insert(Comment comment);
 
+    @UpdateProvider(type = CommentProvider.class, method = "update")
     void update(Comment comment);
 
+    @Delete("DELETE FROM comment" +
+            " WHERE" +
+            "    id = #{id}")
     void deleteById(@Param("id") Integer id);
 }

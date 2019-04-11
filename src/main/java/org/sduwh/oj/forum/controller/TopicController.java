@@ -8,6 +8,8 @@ import org.sduwh.oj.forum.service.TopicService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @Slf4j
 @RestController
 @RequestMapping("/api/topics")
@@ -44,10 +46,10 @@ public class TopicController {
         return ResultMessage.success();
     }
 
-    @GetMapping("/sort")
-    public ResultMessage vote(@RequestParam Integer sortType) {
-        topicService.sort(sortType);
-        return ResultMessage.success();
+    @GetMapping("/vote")
+    public ResultMessage vote(@RequestParam Integer id) {
+        Integer likeCount = topicService.vote(id);
+        return ResultMessage.success(likeCount);
     }
 
 }

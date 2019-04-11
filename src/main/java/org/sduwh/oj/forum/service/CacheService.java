@@ -75,6 +75,23 @@ public class CacheService {
         }
     }
 
+    public Long count(CacheKeyConstants prefix, String key) {
+
+        Jedis jedis = null;
+
+        try {
+            jedis = redisPool.instance();
+            String cacheKey = generateCacheKey(prefix, key);
+            Long res = jedis.incr(cacheKey);
+            return res;
+        } catch (Exception e) {
+            log.error("save cache exception, key:{}", gson.toJson(key));
+            return null;
+        } finally {
+            redisPool.safeClose(jedis);
+        }
+    }
+
     private String generateCacheKey(CacheKeyConstants prefix, String... keys) {
         String key = prefix.name();
         if (keys != null && keys.length > 0) {

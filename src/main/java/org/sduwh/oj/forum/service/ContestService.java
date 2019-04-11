@@ -1,5 +1,7 @@
 package org.sduwh.oj.forum.service;
 
+import org.sduwh.oj.forum.common.SortType;
+import org.sduwh.oj.forum.exception.ParamException;
 import org.sduwh.oj.forum.mapper.TopicMapper;
 import org.sduwh.oj.forum.model.Topic;
 import org.sduwh.oj.forum.param.OjContestParam;
@@ -101,5 +103,35 @@ public class ContestService {
         else  // 如果非contest的创建者，则只能看到自己发的帖子
             return false;
 
+    }
+
+    /**
+     * 排序
+     *
+     * @param sortType 0：最新发表 1: 最旧发表
+     *                 2：投票最多 3: 投票最少
+     *                 4：评论最多 5: 评论最少
+     */
+    public List<TopicParam> sort(Integer contestId, Integer problemId, Integer sortType) {
+
+        List<TopicParam> topicParamList = new ArrayList<>();
+
+        // TODO:
+        if (sortType.equals(SortType.CREATE_TIME_DESC.getIdx())) {
+            List<Topic> topics = topicMapper.sortByCreateTimeDESCWithContestAndProblemId(problemId, contestId);
+            for (Topic topic : topics)
+                topicParamList.add(topicService.getTopicById(topic.getId()));
+        } else if (sortType.equals(SortType.CREATE_TIME_ASC.getIdx())) {
+            List<Topic> topics = topicMapper.sortByCreateTimeASCWithContestAndProblemId(problemId, contestId);
+            for (Topic topic : topics)
+                topicParamList.add(topicService.getTopicById(topic.getId()));
+        } else if (sortType.equals(SortType.VOTES_DESC.getIdx())) {
+            List<Topic> topics = topicMapper.sortByVotesDESCWithContestAndProblemId(problemId, contestId);
+            for (Topic topic : topics)
+                topicParamList.add(topicService.getTopicById(topic.getId()));
+        } else
+            throw new ParamException("无效的参数");
+
+        return topicParamList;
     }
 }

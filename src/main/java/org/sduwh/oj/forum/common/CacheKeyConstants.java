@@ -8,4 +8,5 @@ public enum CacheKeyConstants {
     FORUM_COMMENTS_KEY,
     FORUM_USER_TOKEN_KEY,
     FORUM_TOPIC_VIEW_COUNT_KEY,
+    FORUM_TOPIC_LIKE_COUNT_KEY
 }

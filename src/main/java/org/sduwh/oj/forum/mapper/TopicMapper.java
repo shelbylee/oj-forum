@@ -8,6 +8,8 @@ import java.util.List;
 @Mapper
 public interface TopicMapper {
 
+    /** select **/
+
     @Select("SELECT * FROM topic WHERE id = #{id}")
     @Results(id = "topic", value = {
             @Result(property = "id", column = "id"),
@@ -50,6 +52,8 @@ public interface TopicMapper {
     @ResultMap("topic")
     List<Topic> searchByKeywordsWithProblemAndContestId(@Param("keywords") String keywords, @Param("problemId") Integer problemId, @Param("contestId") Integer contestId);
 
+    /** insert **/
+
     @Insert("INSERT INTO topic (" +
             "    title, content, create_time, user_id, comment_count, problem_id, contest_id, contest_creator_id" +
             ") VALUES (" +
@@ -58,11 +62,30 @@ public interface TopicMapper {
     @Options(useGeneratedKeys = true, keyProperty = "id", keyColumn = "id")
     void insert(Topic topic);
 
+    /** update **/
+
     @UpdateProvider(type = TopicProvider.class, method = "update")
     int update(Topic topic);
+
+    /** delete **/
 
     @Delete("DELETE FROM topic" +
             " WHERE" +
             "    id = #{id}")
     void deleteById(@Param("id") Integer id);
+
+    /** sort **/
+
+    @Select("SELECT * FROM topic WHERE problem_id = #{problemId} and contest_id = #{contestId} ORDER BY create_time DESC")
+    @ResultMap("topic")
+    List<Topic> sortByCreateTimeDESCWithContestAndProblemId(@Param("problemId") Integer problemId, @Param("contestId") Integer contestId);
+
+    @Select("SELECT * FROM topic WHERE problem_id = #{problemId} and contest_id = #{contestId} ORDER BY create_time ASC")
+    @ResultMap("topic")
+    List<Topic> sortByCreateTimeASCWithContestAndProblemId(@Param("problemId") Integer problemId, @Param("contestId") Integer contestId);
+
+    @Select("SELECT * FROM topic WHERE problem_id = #{problemId} and contest_id = #{contestId} ORDER BY like_count DESC")
+    @ResultMap("topic")
+    List<Topic> sortByVotesDESCWithContestAndProblemId(@Param("problemId") Integer problemId, @Param("contestId") Integer contestId);
+
 }

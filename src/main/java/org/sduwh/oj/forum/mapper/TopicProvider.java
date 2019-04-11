@@ -21,11 +21,13 @@ public class TopicProvider extends SQL {
             if (!StringUtils.isEmpty(topic.getUpdatedAt())) {
                 SET("modify_time= #{updatedAt}");
             }
-            if (!StringUtils.isEmpty(topic.getUpIds())) {
-                SET("up_ids= #{upIds}");
-            }
+            // upIds有时需要设置为空
+            SET("up_ids= #{upIds}");
             if (!StringUtils.isEmpty(topic.getViewCount())) {
                 SET("view_count= #{viewCount}");
+            }
+            if (!StringUtils.isEmpty(topic.getViewCount())) {
+                SET("like_count= #{likeCount}");
             }
             WHERE("id = #{id}");
         }}.toString();

@@ -3,6 +3,7 @@ package org.sduwh.oj.forum.service;
 import com.google.common.base.Preconditions;
 import org.sduwh.oj.forum.common.CacheKeyConstants;
 import org.sduwh.oj.forum.common.RequestHolder;
+import org.sduwh.oj.forum.common.SortType;
 import org.sduwh.oj.forum.exception.ParamException;
 import org.sduwh.oj.forum.mapper.TopicMapper;
 import org.sduwh.oj.forum.model.Topic;
@@ -11,7 +12,6 @@ import org.sduwh.oj.forum.param.TopicParam;
 import org.sduwh.oj.forum.util.DateUtil;
 import org.sduwh.oj.forum.util.IpUtil;
 import org.sduwh.oj.forum.util.JsonUtil;
-import org.sduwh.oj.forum.util.SpringRestTemplateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -164,7 +164,7 @@ public class TopicService {
         Preconditions.checkNotNull(topic, "该话题可能已经被删除");
 
         // 用户不能给自己点赞
-        if (Integer.valueOf(userId) == topic.getUserId()) {
+        if (Integer.valueOf(userId).equals(topic.getUserId())) {
             throw new ParamException("您不能给自己的帖子点赞！");
         }
 
@@ -180,6 +180,7 @@ public class TopicService {
         }
 
         topic.setUpIds(StringUtils.collectionToCommaDelimitedString(idSet));
+        topic.setLikeCount(idSet.size());
 
         this.update(topic);
 
@@ -206,23 +207,6 @@ public class TopicService {
     public void update(Topic topic) {
         topicMapper.update(topic);
         cacheService.saveCache(JsonUtil.objectToJson(topic), 3600, CacheKeyConstants.FORUM_TOPIC_KEY, String.valueOf(topic.getId()));
-    }
-
-    /**
-     * 排序
-     *
-     * @param sortType 0：最新发表 1：Most posts（最多评论） 2：Most votes（最多投票）
-     */
-    public void sort(Integer sortType) {
-        // TODO:
-        if (sortType == 0) {
-
-        } else if (sortType == 1) {
-
-        } else if (sortType == 2) {
-
-        } else
-            throw new ParamException("无效的参数");
     }
 
 }

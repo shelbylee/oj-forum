@@ -43,4 +43,10 @@ public class ContestController {
         Topic topic = contestService.saveContestTopic(param);
         return ResultMessage.success(topic);
     }
+
+    @GetMapping("/{contestId}/problem/{problemId}/sort/{sortType}")
+    public ResultMessage sort(@PathVariable("contestId") Integer contestId, @PathVariable("problemId") Integer problemId, @PathVariable("sortType") Integer sortType) {
+        List<TopicParam> topics = contestService.sort(contestId, problemId, sortType);
+        return ResultMessage.success(topics);
+    }
 }

@@ -129,7 +129,20 @@ public class ContestService {
             List<Topic> topics = topicMapper.sortByVotesDESCWithContestAndProblemId(problemId, contestId);
             for (Topic topic : topics)
                 topicParamList.add(topicService.getTopicById(topic.getId()));
-        } else
+        } else if (sortType.equals(SortType.VOTES_ASC.getIdx())) {
+            List<Topic> topics = topicMapper.sortByVotesASCWithContestAndProblemId(problemId, contestId);
+            for (Topic topic : topics)
+                topicParamList.add(topicService.getTopicById(topic.getId()));
+        } else if (sortType.equals(SortType.POSTS_DESC.getIdx())) {
+            List<Topic> topics = topicMapper.sortByPostsDESCWithContestAndProblemId(problemId, contestId);
+            for (Topic topic : topics)
+                topicParamList.add(topicService.getTopicById(topic.getId()));
+        } else if (sortType.equals(SortType.POSTS_ASC.getIdx())) {
+            List<Topic> topics = topicMapper.sortByPostsASCWithContestAndProblemId(problemId, contestId);
+            for (Topic topic : topics)
+                topicParamList.add(topicService.getTopicById(topic.getId()));
+        }
+        else
             throw new ParamException("无效的参数");
 
         return topicParamList;

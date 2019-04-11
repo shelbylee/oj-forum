@@ -3,7 +3,6 @@ package org.sduwh.oj.forum.service;
 import com.google.common.base.Preconditions;
 import org.sduwh.oj.forum.common.CacheKeyConstants;
 import org.sduwh.oj.forum.common.RequestHolder;
-import org.sduwh.oj.forum.common.SortType;
 import org.sduwh.oj.forum.exception.ParamException;
 import org.sduwh.oj.forum.mapper.TopicMapper;
 import org.sduwh.oj.forum.model.Topic;

@@ -26,8 +26,11 @@ public class TopicProvider extends SQL {
             if (!StringUtils.isEmpty(topic.getViewCount())) {
                 SET("view_count= #{viewCount}");
             }
-            if (!StringUtils.isEmpty(topic.getViewCount())) {
+            if (!StringUtils.isEmpty(topic.getLikeCount())) {
                 SET("like_count= #{likeCount}");
+            }
+            if (!StringUtils.isEmpty(topic.getCommentCount())) {
+                SET("comment_count= #{commentCount}");
             }
             WHERE("id = #{id}");
         }}.toString();

@@ -43,6 +43,8 @@ public class CommentService {
         Preconditions.checkNotNull(topic, "你晚了一步，话题可能已经被删除了");
 
         commentMapper.insert(comment);
+        topic.setCommentCount(topic.getCommentCount() + 1);
+        topicService.update(topic);
 
         return comment;
     }

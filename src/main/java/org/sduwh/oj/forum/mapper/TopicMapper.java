@@ -88,4 +88,16 @@ public interface TopicMapper {
     @ResultMap("topic")
     List<Topic> sortByVotesDESCWithContestAndProblemId(@Param("problemId") Integer problemId, @Param("contestId") Integer contestId);
 
+    @Select("SELECT * FROM topic WHERE problem_id = #{problemId} and contest_id = #{contestId} ORDER BY like_count ASC")
+    @ResultMap("topic")
+    List<Topic> sortByVotesASCWithContestAndProblemId(@Param("problemId") Integer problemId, @Param("contestId") Integer contestId);
+
+    @Select("SELECT * FROM topic WHERE problem_id = #{problemId} and contest_id = #{contestId} ORDER BY comment_count DESC")
+    @ResultMap("topic")
+    List<Topic> sortByPostsDESCWithContestAndProblemId(@Param("problemId") Integer problemId, @Param("contestId") Integer contestId);
+
+    @Select("SELECT * FROM topic WHERE problem_id = #{problemId} and contest_id = #{contestId} ORDER BY comment_count ASC")
+    @ResultMap("topic")
+    List<Topic> sortByPostsASCWithContestAndProblemId(@Param("problemId") Integer problemId, @Param("contestId") Integer contestId);
+
 }

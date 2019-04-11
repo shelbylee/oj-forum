@@ -39,7 +39,7 @@ public class ContestController {
 
     // 创建话题
     @PostMapping("/problem/topic")
-    public ResultMessage create(TopicParam param) {
+    public ResultMessage create(@RequestBody TopicParam param) {
         Topic topic = contestService.saveContestTopic(param);
         return ResultMessage.success(topic);
     }

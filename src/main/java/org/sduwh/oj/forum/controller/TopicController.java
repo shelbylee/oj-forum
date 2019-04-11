@@ -8,8 +8,6 @@ import org.sduwh.oj.forum.service.TopicService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @Slf4j
 @RestController
 @RequestMapping("/api/topics")
@@ -27,22 +25,22 @@ public class TopicController {
 
     // 创建话题
     @PostMapping()
-    public ResultMessage create(TopicParam param) {
+    public ResultMessage create(@RequestBody TopicParam param) {
         Topic topic = topicService.saveTopic(param);
         return ResultMessage.success(topic);
     }
 
     // 编辑话题
     @PutMapping()
-    public ResultMessage edit(TopicParam param) {
+    public ResultMessage edit(@RequestBody TopicParam param) {
         Topic topic = topicService.editTopicById(param);
         return ResultMessage.success(topic);
     }
 
     // 删除话题
     @DeleteMapping()
-    public ResultMessage delete(TopicParam param) {
-        topicService.deleteTopicById(param);
+    public ResultMessage delete(@RequestParam Integer id) {
+        topicService.deleteTopicById(id);
         return ResultMessage.success();
     }
 

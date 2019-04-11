@@ -5,6 +5,8 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
+import lombok.extern.slf4j.Slf4j;
+import org.sduwh.oj.forum.exception.ParamException;
 import org.sduwh.oj.forum.param.OjContestParam;
 import org.sduwh.oj.forum.param.OjUserParam;
 import org.sduwh.oj.forum.param.UserParam;
@@ -24,6 +26,7 @@ import java.util.List;
 import java.util.Objects;
 
 @Component
+@Slf4j
 public class SpringRestTemplateUtil {
 
     // TODO: 改成配置信息
@@ -36,10 +39,11 @@ public class SpringRestTemplateUtil {
 
     /**
      * 调用oj的sso接口进行第三方登录
+     *
      * @param request
      * @return 返回登录用户的信息
      */
-    public UserParam getUserInfo(HttpServletRequest request) {
+    public synchronized UserParam getUserInfo(HttpServletRequest request) {
 
         Gson gson = new Gson();
 
@@ -75,6 +79,11 @@ public class SpringRestTemplateUtil {
 
         JsonObject userBody = new JsonParser().parse(Objects.requireNonNull(result.getBody())).getAsJsonObject();
 
+        if (!String.valueOf(userBody.get("error")).equals("null")) {
+            log.error("Post request to qduoj /api/sso failed!");
+            throw new ParamException("User does not exist");
+        }
+
         OjUserParam userInfo = gson.fromJson(userBody, OjUserParam.class);
 
         UserParam user = new UserParam();
@@ -83,31 +92,25 @@ public class SpringRestTemplateUtil {
         user.setUserType(userInfo.getData().getUserType());
 
         return user;
+
     }
 
     /**
      * 根据contest id获取contest信息
+     *
      * @param contestId
      * @return 返回比赛创建者的信息
      */
     public OjContestParam.OjData.CreatorData getContestCreatorData(Integer contestId) {
+
         Gson gson = new Gson();
-
-/*        Cookie[] cookies = request.getCookies();
-        List<String> cookieList = new ArrayList<>();
-
-        Preconditions.checkNotNull(cookies, "Cookie is null!");
-
-        for (Cookie cookie : cookies) {
-            cookieList.add(cookie.getName() + "=" + cookie.getValue());
-            getHeaders.put(HttpHeaders.COOKIE, cookieList);
-        }*/
 
         HttpEntity getRequest = new HttpEntity(new HttpHeaders());
         ResponseEntity<String> responseEntity = restTemplate.exchange(OJ_CONTEST_URL + "?id=" + contestId, HttpMethod.GET, getRequest, String.class);
         JsonObject respBody = new JsonParser().parse(Objects.requireNonNull(responseEntity.getBody())).getAsJsonObject();
 
-        Type contestType = new TypeToken<OjContestParam>() {}.getType();
+        Type contestType = new TypeToken<OjContestParam>() {
+        }.getType();
         // {"error":null,"data":{"token":"6a49bb3eb46264010277cd96c49953a9"}}
         OjContestParam ojContestParam = gson.fromJson(respBody, contestType);
 

@@ -18,22 +18,22 @@ public class CommentController {
 
     // 创建评论
     @PostMapping()
-    public ResultMessage create(CommentParam param) {
+    public ResultMessage create(@RequestBody CommentParam param) {
         Comment comment = commentService.saveComment(param);
         return ResultMessage.success(comment);
     }
 
     // 编辑评论
     @PutMapping()
-    public ResultMessage edit(CommentParam param) {
+    public ResultMessage edit(@RequestBody CommentParam param) {
         Comment comment = commentService.editCommentById(param);
         return ResultMessage.success(comment);
     }
 
     // 删除评论
     @DeleteMapping()
-    public ResultMessage delete(CommentParam param) {
-        commentService.deleteCommentById(param);
+    public ResultMessage delete(@RequestParam Integer id) {
+        commentService.deleteCommentById(id);
         return ResultMessage.success();
     }
 }

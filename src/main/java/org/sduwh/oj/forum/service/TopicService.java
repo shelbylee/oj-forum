@@ -144,10 +144,8 @@ public class TopicService {
         return topic;
     }
 
-    public void deleteTopicById(TopicParam param) {
-        Integer topicId = param.getId();
+    public void deleteTopicById(Integer topicId) {
         Integer userId = userService.getUserId();
-
         if (userService.compareUserAndTopicId(userId, topicId)) {
             topicMapper.deleteById(topicId);
             cacheService.delCache(CacheKeyConstants.FORUM_TOPIC_KEY, String.valueOf(topicId));

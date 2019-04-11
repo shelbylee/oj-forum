@@ -68,13 +68,10 @@ public class CommentService {
         return comment;
     }
 
-    public void deleteCommentById(CommentParam param) {
-        Integer commentId = param.getId();
+    public void deleteCommentById(Integer commentId) {
         Integer userId = userService.getUserId();
-
         Comment comment = commentMapper.selectById(commentId);
         Preconditions.checkNotNull(comment, "这个评论可能已经被删除了，多发点对别人有帮助的评论吧");
-
         if (userService.compareUserAndCommentId(userId, commentId)) {
             commentMapper.deleteById(commentId);
         }

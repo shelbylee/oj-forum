@@ -44,10 +44,25 @@ public class TopicController {
         return ResultMessage.success();
     }
 
+    // 点赞话题
     @GetMapping("/vote")
     public ResultMessage vote(@RequestParam Integer id) {
         Integer likeCount = topicService.vote(id);
         return ResultMessage.success(likeCount);
+    }
+
+    // 浏览量
+    @GetMapping("/view-count")
+    public ResultMessage view(@RequestParam Integer id) {
+        Integer viewCount = topicService.getViewCount(id);
+        return ResultMessage.success(viewCount);
+    }
+
+    // 评论数
+    @GetMapping("/post-count")
+    public ResultMessage post(@RequestParam Integer id) {
+        Integer viewCount = topicService.getPostCount(id);
+        return ResultMessage.success(viewCount);
     }
 
 }

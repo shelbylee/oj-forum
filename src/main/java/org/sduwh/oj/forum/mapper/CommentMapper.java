@@ -49,4 +49,8 @@ public interface CommentMapper {
             " WHERE" +
             "    id = #{id}")
     void deleteById(@Param("id") Integer id);
+
+    @Select("SELECT count(*) FROM comment WHERE topic_id = #{topicId}")
+    @ResultType(Integer.class)
+    Integer getPostCount(@Param("topicId") Integer topicId);
 }

@@ -12,6 +12,7 @@ import org.sduwh.oj.forum.util.DateUtil;
 import org.sduwh.oj.forum.util.JsonUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.lang.reflect.Type;
@@ -34,6 +35,7 @@ public class CommentService {
 
         Comment comment = new Comment();
         comment.setCommentId(param.getCommentId());
+        Preconditions.checkNotNull(param.getTopicId(), "必须绑定topic id！");
         comment.setTopicId(param.getTopicId());
         comment.setContent(param.getContent());
         comment.setUserId(userService.getUserId());
@@ -42,11 +44,16 @@ public class CommentService {
         Topic topic = topicService.getTopicByIdWithoutComment(param.getTopicId());
         Preconditions.checkNotNull(topic, "你晚了一步，话题可能已经被删除了");
 
-        commentMapper.insert(comment);
-        topic.setCommentCount(topic.getCommentCount() + 1);
-        topicService.update(topic);
+        insertCommentAndUpdateTopic(comment, topic);
 
         return comment;
+    }
+
+    @Transactional
+    public void insertCommentAndUpdateTopic(Comment comment, Topic topic) {
+        commentMapper.insert(comment);
+        topic.setCommentCount(commentMapper.getPostCount(topic.getId()));
+        topicService.update(topic);
     }
 
     public Comment editCommentById(CommentParam param) {
@@ -87,7 +94,8 @@ public class CommentService {
             comments = commentMapper.selectByTopicId(topicId);
             cacheService.saveCache(JsonUtil.objectToJson(comments), 3600, CacheKeyConstants.FORUM_COMMENTS_KEY, String.valueOf(topicId));
         } else {
-            Type type = new TypeToken<List<CommentParam>>() {}.getType();
+            Type type = new TypeToken<List<CommentParam>>() {
+            }.getType();
             comments = JsonUtil.jsonToObject(cacheComments, type);
         }
         return comments;

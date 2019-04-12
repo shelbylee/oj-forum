@@ -1,5 +1,6 @@
 package org.sduwh.oj.forum.service;
 
+import com.google.common.base.Preconditions;
 import org.sduwh.oj.forum.common.SortType;
 import org.sduwh.oj.forum.exception.ParamException;
 import org.sduwh.oj.forum.mapper.TopicMapper;
@@ -18,11 +19,7 @@ import java.util.List;
 public class ContestService {
 
     @Autowired
-    private CacheService cacheService;
-    @Autowired
     private UserService userService;
-    @Autowired
-    private CommentService commentService;
     @Autowired
     private TopicService topicService;
     @Autowired
@@ -65,6 +62,9 @@ public class ContestService {
     public Topic saveContestTopic(TopicParam param) {
 
         Topic topic = new Topic();
+
+        Preconditions.checkNotNull(param.getContestId(), "必须绑定contest id！");
+        Preconditions.checkNotNull(param.getProblemId(), "必须绑定problem id！");
 
         // 1为允许
         if (param.getDiscussStatus() == 1) {
@@ -116,7 +116,6 @@ public class ContestService {
 
         List<TopicParam> topicParamList = new ArrayList<>();
 
-        // TODO:
         if (sortType.equals(SortType.CREATE_TIME_DESC.getIdx())) {
             List<Topic> topics = topicMapper.sortByCreateTimeDESCWithContestAndProblemId(problemId, contestId);
             for (Topic topic : topics)

@@ -52,6 +52,12 @@ public interface TopicMapper {
     @ResultMap("topic")
     List<Topic> searchByKeywordsWithProblemAndContestId(@Param("keywords") String keywords, @Param("problemId") Integer problemId, @Param("contestId") Integer contestId);
 
+    @Select("SELECT view_count FROM topic WHERE id = #{id}")
+    @Results(
+            @Result(property = "view_count", column = "view_count")
+    )
+    Integer getViewCount(@Param("id") Integer id);
+
     /** insert **/
 
     @Insert("INSERT INTO topic (" +

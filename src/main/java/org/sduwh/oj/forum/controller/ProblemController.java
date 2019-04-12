@@ -20,6 +20,7 @@ public class ProblemController {
     @Autowired
     private ProblemService problemService;
 
+    // 查询某个problem下的所有话题
     @GetMapping("/problems/{id}/topics")
     public ResultMessage selectByProblemId(@PathVariable("id") Integer id) {
         List<TopicParam> topicList = problemService.getTopicsByProblemId(id);

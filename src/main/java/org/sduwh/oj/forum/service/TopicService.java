@@ -4,6 +4,7 @@ import com.google.common.base.Preconditions;
 import org.sduwh.oj.forum.common.CacheKeyConstants;
 import org.sduwh.oj.forum.common.RequestHolder;
 import org.sduwh.oj.forum.exception.ParamException;
+import org.sduwh.oj.forum.mapper.CommentMapper;
 import org.sduwh.oj.forum.mapper.TopicMapper;
 import org.sduwh.oj.forum.model.Topic;
 import org.sduwh.oj.forum.param.CommentParam;
@@ -33,6 +34,8 @@ public class TopicService {
 
     @Resource
     private TopicMapper topicMapper;
+    @Resource
+    private CommentMapper commentMapper;
 
     public TopicParam getTopicById(Integer topicId) {
 
@@ -125,6 +128,8 @@ public class TopicService {
 
     public Topic editTopicById(TopicParam param) {
 
+        Preconditions.checkNotNull(param.getId(), "topic id不能为空！");
+
         Integer topicId = param.getId();
         Topic topic = topicMapper.selectById(topicId);
 
@@ -146,6 +151,7 @@ public class TopicService {
 
     public void deleteTopicById(Integer topicId) {
         Integer userId = userService.getUserId();
+        // TODO: 管理员权限
         if (userService.compareUserAndTopicId(userId, topicId)) {
             topicMapper.deleteById(topicId);
             cacheService.delCache(CacheKeyConstants.FORUM_TOPIC_KEY, String.valueOf(topicId));
@@ -204,6 +210,16 @@ public class TopicService {
     public void update(Topic topic) {
         topicMapper.update(topic);
         cacheService.saveCache(JsonUtil.objectToJson(topic), 3600, CacheKeyConstants.FORUM_TOPIC_KEY, String.valueOf(topic.getId()));
+    }
+
+    public Integer getViewCount(Integer topicId) {
+        Integer viewCount = topicMapper.getViewCount(topicId);
+        return viewCount;
+    }
+
+    public Integer getPostCount(Integer topicId) {
+        Integer postCount = commentMapper.getPostCount(topicId);
+        return postCount;
     }
 
 }

@@ -80,7 +80,7 @@ public interface TopicMapper {
             "    id = #{id}")
     void deleteById(@Param("id") Integer id);
 
-    /** sort **/
+    /** contest problem topic sort **/
 
     @Select("SELECT * FROM topic WHERE problem_id = #{problemId} and contest_id = #{contestId} ORDER BY create_time DESC")
     @ResultMap("topic")
@@ -105,5 +105,57 @@ public interface TopicMapper {
     @Select("SELECT * FROM topic WHERE problem_id = #{problemId} and contest_id = #{contestId} ORDER BY comment_count ASC")
     @ResultMap("topic")
     List<Topic> sortByPostsASCWithContestAndProblemId(@Param("problemId") Integer problemId, @Param("contestId") Integer contestId);
+
+    /** problem topic sort **/
+
+    @Select("SELECT * FROM topic WHERE problem_id = #{problemId} ORDER BY create_time DESC")
+    @ResultMap("topic")
+    List<Topic> sortByCreateTimeDESCWithProblemId(@Param("problemId") Integer problemId);
+
+    @Select("SELECT * FROM topic WHERE problem_id = #{problemId} ORDER BY create_time ASC")
+    @ResultMap("topic")
+    List<Topic> sortByCreateTimeASCWithProblemId(@Param("problemId") Integer problemId);
+
+    @Select("SELECT * FROM topic WHERE problem_id = #{problemId} ORDER BY like_count DESC")
+    @ResultMap("topic")
+    List<Topic> sortByVotesDESCWithProblemId(@Param("problemId") Integer problemId);
+
+    @Select("SELECT * FROM topic WHERE problem_id = #{problemId} ORDER BY like_count ASC")
+    @ResultMap("topic")
+    List<Topic> sortByVotesASCWithProblemId(@Param("problemId") Integer problemId);
+
+    @Select("SELECT * FROM topic WHERE problem_id = #{problemId} ORDER BY comment_count DESC")
+    @ResultMap("topic")
+    List<Topic> sortByPostsDESCWithProblemId(@Param("problemId") Integer problemId);
+
+    @Select("SELECT * FROM topic WHERE problem_id = #{problemId} ORDER BY comment_count ASC")
+    @ResultMap("topic")
+    List<Topic> sortByPostsASCWithProblemId(@Param("problemId") Integer problemId);
+
+    /** topic sort **/
+
+    @Select("SELECT * FROM topic WHERE problem_id is null and contest_id is null ORDER BY create_time DESC")
+    @ResultMap("topic")
+    List<Topic> sortByCreateTimeDESC();
+
+    @Select("SELECT * FROM topic WHERE problem_id is null and contest_id is null ORDER BY create_time ASC")
+    @ResultMap("topic")
+    List<Topic> sortByCreateTimeASC();
+
+    @Select("SELECT * FROM topic WHERE problem_id is null and contest_id is null ORDER BY like_count DESC")
+    @ResultMap("topic")
+    List<Topic> sortByVotesDESC();
+
+    @Select("SELECT * FROM topic WHERE problem_id is null and contest_id is null ORDER BY like_count ASC")
+    @ResultMap("topic")
+    List<Topic> sortByVotesASC();
+
+    @Select("SELECT * FROM topic WHERE problem_id is null and contest_id is null ORDER BY comment_count DESC")
+    @ResultMap("topic")
+    List<Topic> sortByPostsDESC();
+
+    @Select("SELECT * FROM topic WHERE problem_id is null and contest_id is null ORDER BY comment_count ASC")
+    @ResultMap("topic")
+    List<Topic> sortByPostsASC();
 
 }

@@ -3,6 +3,7 @@ package org.sduwh.oj.forum.service;
 import com.google.common.base.Preconditions;
 import org.sduwh.oj.forum.common.CacheKeyConstants;
 import org.sduwh.oj.forum.common.RequestHolder;
+import org.sduwh.oj.forum.common.SortType;
 import org.sduwh.oj.forum.exception.ParamException;
 import org.sduwh.oj.forum.mapper.CommentMapper;
 import org.sduwh.oj.forum.mapper.TopicMapper;
@@ -220,6 +221,41 @@ public class TopicService {
     public Integer getPostCount(Integer topicId) {
         Integer postCount = commentMapper.getPostCount(topicId);
         return postCount;
+    }
+
+    public List<TopicParam> sort(Integer sortType) {
+
+        List<TopicParam> topicParamList = new ArrayList<>();
+
+        if (sortType.equals(SortType.CREATE_TIME_DESC.getIdx())) {
+            List<Topic> topics = topicMapper.sortByCreateTimeDESC();
+            for (Topic topic : topics)
+                topicParamList.add(getTopicById(topic.getId()));
+        } else if (sortType.equals(SortType.CREATE_TIME_ASC.getIdx())) {
+            List<Topic> topics = topicMapper.sortByCreateTimeASC();
+            for (Topic topic : topics)
+                topicParamList.add(getTopicById(topic.getId()));
+        } else if (sortType.equals(SortType.VOTES_DESC.getIdx())) {
+            List<Topic> topics = topicMapper.sortByVotesDESC();
+            for (Topic topic : topics)
+                topicParamList.add(getTopicById(topic.getId()));
+        } else if (sortType.equals(SortType.VOTES_ASC.getIdx())) {
+            List<Topic> topics = topicMapper.sortByVotesASC();
+            for (Topic topic : topics)
+                topicParamList.add(getTopicById(topic.getId()));
+        } else if (sortType.equals(SortType.POSTS_DESC.getIdx())) {
+            List<Topic> topics = topicMapper.sortByPostsDESC();
+            for (Topic topic : topics)
+                topicParamList.add(getTopicById(topic.getId()));
+        } else if (sortType.equals(SortType.POSTS_ASC.getIdx())) {
+            List<Topic> topics = topicMapper.sortByPostsASC();
+            for (Topic topic : topics)
+                topicParamList.add(getTopicById(topic.getId()));
+        }
+        else
+            throw new ParamException("无效的参数");
+
+        return topicParamList;
     }
 
 }

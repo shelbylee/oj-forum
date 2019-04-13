@@ -8,6 +8,8 @@ import org.sduwh.oj.forum.service.TopicService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @Slf4j
 @RestController
 @RequestMapping("/api/topics")
@@ -63,6 +65,13 @@ public class TopicController {
     public ResultMessage post(@RequestParam Integer id) {
         Integer viewCount = topicService.getPostCount(id);
         return ResultMessage.success(viewCount);
+    }
+
+    // 排序话题
+    @GetMapping("/sort/{sortType}")
+    public ResultMessage sort(@PathVariable("sortType") Integer sortType) {
+        List<TopicParam> topics = topicService.sort(sortType);
+        return ResultMessage.success(topics);
     }
 
 }

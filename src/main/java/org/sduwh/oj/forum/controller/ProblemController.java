@@ -14,16 +14,23 @@ import java.util.List;
 
 @Slf4j
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/problems")
 public class ProblemController {
 
     @Autowired
     private ProblemService problemService;
 
     // 查询某个problem下的所有话题
-    @GetMapping("/problems/{id}/topics")
+    @GetMapping("/{id}/topics")
     public ResultMessage selectByProblemId(@PathVariable("id") Integer id) {
         List<TopicParam> topicList = problemService.getTopicsByProblemId(id);
         return ResultMessage.success(topicList);
+    }
+
+    // 排序话题
+    @GetMapping("/{problemId}/sort/{sortType}")
+    public ResultMessage sort(@PathVariable("problemId") Integer problemId, @PathVariable("sortType") Integer sortType) {
+        List<TopicParam> topics = problemService.sort(problemId, sortType);
+        return ResultMessage.success(topics);
     }
 }

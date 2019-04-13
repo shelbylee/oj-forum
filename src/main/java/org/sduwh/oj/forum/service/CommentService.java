@@ -90,7 +90,7 @@ public class CommentService {
 
         String cacheComments = cacheService.getFromCache(CacheKeyConstants.FORUM_COMMENTS_KEY, String.valueOf(topicId));
 
-        if (Strings.isNullOrEmpty(cacheComments)) {
+        if (Strings.isNullOrEmpty(cacheComments) || cacheComments.length() == 0 || cacheComments.equals("[]")) {
             comments = commentMapper.selectByTopicId(topicId);
             cacheService.saveCache(JsonUtil.objectToJson(comments), 3600, CacheKeyConstants.FORUM_COMMENTS_KEY, String.valueOf(topicId));
         } else {

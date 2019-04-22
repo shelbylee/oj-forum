@@ -28,6 +28,12 @@ public interface TopicMapper {
     })
     Topic selectById(@Param("id") Integer id);
 
+    @Select("SELECT up_ids FROM topic WHERE id = #{id}")
+    @Results(
+            @Result(property = "up_ids", column = "up_ids")
+    )
+    String selectUpIds(@Param("id") Integer id);
+
     @Select("SELECT * FROM topic ")
     @ResultMap("topic")
     List<Topic> selectAll();

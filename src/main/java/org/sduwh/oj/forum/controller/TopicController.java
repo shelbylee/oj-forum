@@ -53,6 +53,13 @@ public class TopicController {
         return ResultMessage.success(likeCount);
     }
 
+    // 判断该用户是否点赞过该话题
+    @GetMapping("/judge-vote")
+    public ResultMessage judgeVote(@RequestParam Integer id) {
+        Boolean result = topicService.ifUserHadVoted(id);
+        return ResultMessage.success(result);
+    }
+
     // 浏览量
     @GetMapping("/view-count")
     public ResultMessage view(@RequestParam Integer id) {

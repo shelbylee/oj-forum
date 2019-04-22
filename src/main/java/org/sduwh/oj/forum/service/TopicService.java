@@ -18,10 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Service("topicService")
 public class TopicService {
@@ -189,6 +186,14 @@ public class TopicService {
         this.update(topic);
 
         return idSet.size();
+    }
+
+    public Boolean ifUserHadVoted(Integer topicId) {
+        String upIds = topicMapper.selectUpIds(topicId);
+        Set<String> idSet = StringUtils.commaDelimitedListToSet(upIds);
+        if (idSet.contains(userService.getUserId().toString()))
+            return true;
+        return false;
     }
 
     public Topic addViewCount(Topic topic) {

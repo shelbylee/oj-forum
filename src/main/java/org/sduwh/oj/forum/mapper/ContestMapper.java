@@ -14,7 +14,6 @@ public interface ContestMapper {
             ") VALUES (" +
             "    #{contestId}, #{discussStatus}" +
             ")")
-    @Options(useGeneratedKeys = true, keyProperty = "id", keyColumn = "id")
     void insert(Contest contest);
 
     /** select **/
@@ -26,11 +25,11 @@ public interface ContestMapper {
     })
     ContestParam select(@Param("contestId") Integer contestId);
 
-    @Select("SELECT discuss_status FROM contest WHERE id = #{id}")
+    @Select("SELECT discuss_status FROM contest WHERE contest_id = #{contestId}")
     @Results(
             @Result(property = "discussStatus", column = "discuss_status")
     )
-    Integer selectDiscussStatusById(@Param("id") Integer id);
+    Integer selectDiscussStatusById(@Param("contestId") Integer contestId);
 
     /** update **/
 

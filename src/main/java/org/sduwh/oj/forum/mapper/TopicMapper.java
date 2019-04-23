@@ -14,7 +14,7 @@ public interface TopicMapper {
     @Results(id = "topic", value = {
             @Result(property = "id", column = "id"),
             @Result(property = "title", column = "title"),
-            @Result(property = "content", column = "title"),
+            @Result(property = "content", column = "content"),
             @Result(property = "createdAt", column = "create_time"),
             @Result(property = "updatedAt", column = "modify_time"),
             @Result(property = "userId", column = "user_id"),

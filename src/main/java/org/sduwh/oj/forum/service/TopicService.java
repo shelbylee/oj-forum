@@ -201,6 +201,7 @@ public class TopicService {
         String ip = IpUtil.getIpAddr(RequestHolder.getCurrentRequest());
         ip = ip.replace(":", "_").replace(".", "_");
 
+        Preconditions.checkNotNull(topic, "该topic不存在！");
         String topicId = String.valueOf(topic.getId());
 
         String viewCountKey = cacheService.getFromCache(CacheKeyConstants.FORUM_TOPIC_VIEW_COUNT_KEY, ip, topicId);

@@ -6,6 +6,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
 import lombok.extern.slf4j.Slf4j;
+import org.sduwh.oj.forum.config.OJConfig;
 import org.sduwh.oj.forum.exception.ParamException;
 import org.sduwh.oj.forum.param.OjContestParam;
 import org.sduwh.oj.forum.param.OjUserParam;
@@ -29,13 +30,10 @@ import java.util.Objects;
 @Slf4j
 public class SpringRestTemplateUtil {
 
-    // TODO: 改成配置信息
-    private static final String OJ_SSO_URL = "http://localhost:8000/api/sso";
-
-    private static final String OJ_CONTEST_URL = "http://localhost:8000/api/contest";
-
     @Autowired
     private RestTemplate restTemplate;
+    @Autowired
+    private OJConfig ojConfig;
 
     /**
      * 调用oj的sso接口进行第三方登录
@@ -61,7 +59,7 @@ public class SpringRestTemplateUtil {
 
         HttpEntity getRequest = new HttpEntity(getHeaders);
 
-        ResponseEntity<String> responseEntity = restTemplate.exchange(OJ_SSO_URL, HttpMethod.GET, getRequest, String.class);
+        ResponseEntity<String> responseEntity = restTemplate.exchange(ojConfig.getOJ_SSO_URL(), HttpMethod.GET, getRequest, String.class);
 
         JsonObject respBody = new JsonParser().parse(Objects.requireNonNull(responseEntity.getBody())).getAsJsonObject();
 
@@ -75,7 +73,7 @@ public class SpringRestTemplateUtil {
         postHeaders.put("token", tokenList);
 
         HttpEntity postRequest = new HttpEntity(ojUserParam.getData(), null);
-        ResponseEntity<String> result = restTemplate.postForEntity(OJ_SSO_URL, postRequest, String.class);
+        ResponseEntity<String> result = restTemplate.postForEntity(ojConfig.getOJ_SSO_URL(), postRequest, String.class);
 
         JsonObject userBody = new JsonParser().parse(Objects.requireNonNull(result.getBody())).getAsJsonObject();
 
@@ -106,7 +104,7 @@ public class SpringRestTemplateUtil {
         Gson gson = new Gson();
 
         HttpEntity getRequest = new HttpEntity(new HttpHeaders());
-        ResponseEntity<String> responseEntity = restTemplate.exchange(OJ_CONTEST_URL + "?id=" + contestId, HttpMethod.GET, getRequest, String.class);
+        ResponseEntity<String> responseEntity = restTemplate.exchange(ojConfig.getOJ_CONTEST_URL() + "?id=" + contestId, HttpMethod.GET, getRequest, String.class);
         JsonObject respBody = new JsonParser().parse(Objects.requireNonNull(responseEntity.getBody())).getAsJsonObject();
 
         Type contestType = new TypeToken<OjContestParam>() {

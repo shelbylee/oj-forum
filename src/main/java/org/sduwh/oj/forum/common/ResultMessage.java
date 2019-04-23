@@ -39,4 +39,10 @@ public class ResultMessage {
         resultMessage.msg = msg;
         return resultMessage;
     }
+
+    public static ResultMessage fail(Integer code, String msg) {
+        ResultMessage resultMessage = new ResultMessage(code);
+        resultMessage.msg = msg;
+        return resultMessage;
+    }
 }

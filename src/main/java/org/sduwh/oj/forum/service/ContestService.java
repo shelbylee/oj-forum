@@ -3,8 +3,11 @@ package org.sduwh.oj.forum.service;
 import com.google.common.base.Preconditions;
 import org.sduwh.oj.forum.common.SortType;
 import org.sduwh.oj.forum.exception.ParamException;
+import org.sduwh.oj.forum.mapper.ContestMapper;
 import org.sduwh.oj.forum.mapper.TopicMapper;
+import org.sduwh.oj.forum.model.Contest;
 import org.sduwh.oj.forum.model.Topic;
+import org.sduwh.oj.forum.param.ContestParam;
 import org.sduwh.oj.forum.param.OjContestParam;
 import org.sduwh.oj.forum.param.TopicParam;
 import org.sduwh.oj.forum.util.SpringRestTemplateUtil;
@@ -27,6 +30,8 @@ public class ContestService {
 
     @Resource
     private TopicMapper topicMapper;
+    @Resource
+    private ContestMapper contestMapper;
 
     public TopicParam getTopicFromContest(Integer contestId, Integer topicId) {
 
@@ -59,6 +64,26 @@ public class ContestService {
         return topicParamList;
     }
 
+    public Integer getDiscussStatus(Integer contestId) {
+        return contestMapper.selectDiscussStatusById(contestId);
+    }
+
+    public ContestParam updateDiscussStatus(Integer contestId, Integer discussStatus) {
+
+        Preconditions.checkNotNull(contestId, "contest id不能为空！");
+        Preconditions.checkNotNull(discussStatus, "contest discuss status不能为空！");
+
+        ContestParam param = new ContestParam();
+        param.setContestId(contestId);
+        param.setDiscussStatus(discussStatus);
+
+        ContestParam contestParam = contestMapper.select(param.getContestId());
+        Preconditions.checkNotNull(contestParam, "该比赛可能已被删除！");
+
+        contestMapper.update(param);
+        return contestMapper.select(param.getContestId());
+    }
+
     public Topic saveContestTopic(TopicParam param) {
 
         Topic topic = new Topic();
@@ -89,6 +114,23 @@ public class ContestService {
         }
 
         return topic;
+    }
+
+    public Contest saveDiscussStatus(Integer contestId, Integer discussStatus) {
+
+        Preconditions.checkNotNull(contestId, "contest id不能为空！");
+        Preconditions.checkNotNull(discussStatus, "contest discuss status不能为空！");
+
+        Preconditions.checkNotNull(contestId, "contest id不能为空！");
+        Preconditions.checkNotNull(discussStatus, "contest discuss status不能为空！");
+
+        Contest contest = new Contest();
+        contest.setContestId(contestId);
+        contest.setDiscussStatus(discussStatus);
+
+        contestMapper.insert(contest);
+
+        return contest;
     }
 
     private Boolean isContestCreator(Integer contestId) {

@@ -40,4 +40,10 @@ public class UserService {
     public Integer getUserId() {
         return RequestHolder.getCurrentUser().getUserId();
     }
+
+    public Boolean isAdmin() {
+        if (getUserType().equals("Admin") || getUserType().equals("Super Admin"))
+            return true;
+        return false;
+    }
 }

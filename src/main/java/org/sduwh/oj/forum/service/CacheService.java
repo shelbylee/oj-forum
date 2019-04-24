@@ -60,8 +60,6 @@ public class CacheService {
 
     public void delCache(CacheKeyConstants prefix, String... keys) {
 
-        // TODO: try-with-resources
-
         Jedis jedis = null;
 
         try {

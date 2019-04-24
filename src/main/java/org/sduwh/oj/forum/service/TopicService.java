@@ -149,8 +149,7 @@ public class TopicService {
 
     public void deleteTopicById(Integer topicId) {
         Integer userId = userService.getUserId();
-        // TODO: 管理员权限
-        if (userService.compareUserAndTopicId(userId, topicId)) {
+        if (userService.compareUserAndTopicId(userId, topicId) || userService.isAdmin()) {
             topicMapper.deleteById(topicId);
             cacheService.delCache(CacheKeyConstants.FORUM_TOPIC_KEY, String.valueOf(topicId));
         }

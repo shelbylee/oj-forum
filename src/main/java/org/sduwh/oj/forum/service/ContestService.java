@@ -13,6 +13,7 @@ import org.sduwh.oj.forum.param.TopicParam;
 import org.sduwh.oj.forum.util.SpringRestTemplateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
@@ -39,6 +40,7 @@ public class ContestService {
 
         Integer userId = userService.getUserId();
 
+        // 如果是管理员，可以看到所有topic
         if (isContestCreator(contestId))
             topic = topicService.getTopicById(topicId);
         else
@@ -53,12 +55,18 @@ public class ContestService {
 
         List<Topic> topics = topicMapper.selectByProblemContestId(contestId, problemId);
 
-        if (isContestCreator(contestId)) {
+        if (isContestCreator(contestId) || userService.isAdmin()) {
             for (Topic topic : topics)
                 topicParamList.add(topicService.getTopicById(topic.getId()));
         } else {
             for (Topic topic : topics)
-                topicParamList.add(topicService.getOwnTopic(userService.getUserId(), topic.getId()));
+                if (getDiscussStatus(contestId).equals(0)) {
+                    TopicParam topicParam = topicService.getOwnTopic(userService.getUserId(), topic.getId());
+                    if (!StringUtils.isEmpty(topicParam))
+                        topicParamList.add(topicParam);
+                }
+                else if (getDiscussStatus(contestId).equals(1))
+                    topicParamList.add(topicService.getTopicById(topic.getId()));
         }
 
         return topicParamList;
@@ -100,15 +108,18 @@ public class ContestService {
         // 0为禁止
         else if (param.getDiscussStatus() == 0) {
             // 判断用户身份
+            // user type:   Regular User, Admin, Super Admin
             String userType = userService.getUserType();
             // 如果用户是普通用户，则发帖仅createdById可见
-            // user type:    Regular User, Admin, Super Admin
-            // 方便测试，暂时先写成Super Admin
-            if (userType.equals("Super Admin")) {
+            if (userType.equals("Regular User")) {
                 OjContestParam.OjData.CreatorData creatorData = restTemplateUtil.getContestCreatorData(param.getContestId());
                 Integer contestCreatorId = creatorData.getId();
                 topicService.buildTopic(param, topic);
                 topic.setContestCreatorId(contestCreatorId);
+                topicMapper.insert(topic);
+            } else if (userService.isAdmin()) {
+                // 如果是管理员，则正常创建topic，topic对所有人可见
+                topicService.buildTopic(param, topic);
                 topicMapper.insert(topic);
             }
         }

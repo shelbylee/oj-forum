@@ -22,6 +22,7 @@ public class ContestController {
     private ContestService contestService;
 
     // 查询contest中某个话题
+    @Deprecated
     @GetMapping("/{contestId}/topic/{topicId}")
     public ResultMessage select(@PathVariable("contestId") Integer contestId, @PathVariable("topicId") Integer topicId) {
         TopicParam topic = contestService.getTopicFromContest(contestId, topicId);

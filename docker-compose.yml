@@ -1,0 +1,37 @@
+version: '2'
+services:
+  mysql:
+    container_name: oj_forum-mysql
+    image: mysql:5.6
+    restart: always
+    volumes:
+      - ./data/mysql/data:/var/lib/mysql
+      - ./data/mysql/config/my.cnf:/etc/my.cnf
+      - ./data/mysql/init:/docker-entrypoint-initdb.d/
+    environment:
+      MYSQL_ROOT_USER: root
+      MYSQL_ROOT_PASSWORD: onlinejudge
+    ports:
+      - "3306:3307"
+
+  redis:
+    container_name: oj_forum-redis
+    image: redis:alpine
+    ports:
+      - "6379"
+
+  oj-forum:
+    container_name: oj_forum-server
+    restart: always
+    read_only: true
+    environment:
+      OJ_FORUM_PORT: 8081
+      MYSQL_ROOT_USER: root
+      MYSQL_ROOT_PASSWORD: onlinejudge
+      MYSQL_URL: jdbc:mysql://localhost:3307/oj_forum?useUnicode=true&zeroDateTimeBehavior=convertToNull&autoReconnect=true
+      MYSQL_JDBC_DRIVER: com.mysql.cj.jdbc.Driver
+    expose:
+      - "8081"
+    depends_on:
+      - oj_forum-mysql
+      - oj_forum-redis

@@ -112,10 +112,7 @@ public class ContestService {
             String userType = userService.getUserType();
             // 如果用户是普通用户，则发帖仅createdById可见
             if (userType.equals("Regular User")) {
-                OjContestParam.OjData.CreatorData creatorData = restTemplateUtil.getContestCreatorData(param.getContestId());
-                Integer contestCreatorId = creatorData.getId();
                 topicService.buildTopic(param, topic);
-                topic.setContestCreatorId(contestCreatorId);
                 topicMapper.insert(topic);
             } else if (userService.isAdmin()) {
                 // 如果是管理员，则正常创建topic，topic对所有人可见

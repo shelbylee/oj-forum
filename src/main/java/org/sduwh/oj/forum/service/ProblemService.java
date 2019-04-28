@@ -17,16 +17,7 @@ import java.util.List;
 public class ProblemService {
 
     @Autowired
-    private CacheService cacheService;
-    @Autowired
-    private UserService userService;
-    @Autowired
-    private CommentService commentService;
-    @Autowired
     private TopicService topicService;
-    @Autowired
-    private SpringRestTemplateUtil restTemplateUtil;
-
     @Resource
     private TopicMapper topicMapper;
 

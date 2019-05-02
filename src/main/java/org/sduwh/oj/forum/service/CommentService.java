@@ -10,6 +10,7 @@ import org.sduwh.oj.forum.model.Topic;
 import org.sduwh.oj.forum.param.CommentParam;
 import org.sduwh.oj.forum.util.DateUtil;
 import org.sduwh.oj.forum.util.JsonUtil;
+import org.sduwh.oj.forum.util.SensitiveWordsFilterUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,6 +29,8 @@ public class CommentService {
     private UserService userService;
     @Autowired
     private TopicService topicService;
+    @Autowired
+    private SensitiveWordsFilterUtil sensitiveWordsFilterUtil;
     @Resource
     private CommentMapper commentMapper;
 
@@ -51,6 +54,7 @@ public class CommentService {
 
     @Transactional
     public void insertCommentAndUpdateTopic(Comment comment, Topic topic) {
+        sensitiveWordsFilterUtil.filterComment(comment);
         commentMapper.insert(comment);
         topic.setCommentCount(commentMapper.getPostCount(topic.getId()));
         topicService.update(topic);
@@ -68,7 +72,7 @@ public class CommentService {
         if (userService.compareUserAndCommentId(userId, commentId)) {
             comment.setContent(content);
             comment.setUpdatedAt(DateUtil.formatDateTime(new Date()));
-
+            sensitiveWordsFilterUtil.filterComment(comment);
             commentMapper.update(comment);
         }
 

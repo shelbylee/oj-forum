@@ -13,6 +13,7 @@ import org.sduwh.oj.forum.param.TopicParam;
 import org.sduwh.oj.forum.util.DateUtil;
 import org.sduwh.oj.forum.util.IpUtil;
 import org.sduwh.oj.forum.util.JsonUtil;
+import org.sduwh.oj.forum.util.SensitiveWordsFilterUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -29,6 +30,8 @@ public class TopicService {
     private UserService userService;
     @Autowired
     private CommentService commentService;
+    @Autowired
+    private SensitiveWordsFilterUtil sensitiveWordsFilterUtil;
 
     @Resource
     private TopicMapper topicMapper;
@@ -108,6 +111,7 @@ public class TopicService {
     public Topic saveTopic(TopicParam param) {
         Topic topic = new Topic();
         buildTopic(param, topic);
+        sensitiveWordsFilterUtil.filterTopic(topic);
         topicMapper.insert(topic);
         return topic;
     }
@@ -217,6 +221,7 @@ public class TopicService {
     }
 
     public void update(Topic topic) {
+        sensitiveWordsFilterUtil.filterTopic(topic);
         topicMapper.update(topic);
         cacheService.saveCache(JsonUtil.objectToJson(topic), 3600, CacheKeyConstants.FORUM_TOPIC_KEY, String.valueOf(topic.getId()));
     }

@@ -12,7 +12,6 @@ public class OjForumApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(OjForumApplication.class, args);
-        System.setProperty("spring.devtools.restart.enabled", "true");
     }
 
 }

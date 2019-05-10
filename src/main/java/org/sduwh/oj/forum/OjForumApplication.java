@@ -13,5 +13,4 @@ public class OjForumApplication {
     public static void main(String[] args) {
         SpringApplication.run(OjForumApplication.class, args);
     }
-
 }

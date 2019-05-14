@@ -90,8 +90,8 @@ public class SpringRestTemplateUtil {
 
         UserParam user = new UserParam();
         user.setUserId(userInfo.getData().getUserId());
-        user.setUserName(userInfo.getData().getUserName());
-        user.setUserType(userInfo.getData().getUserType());
+        user.setUserName(userInfo.getData().getUsername());
+        user.setUserType(userInfo.getData().getAdmin_type());
 
         return user;
 

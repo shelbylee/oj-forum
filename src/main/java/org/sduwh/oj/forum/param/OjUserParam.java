@@ -14,7 +14,8 @@ public class OjUserParam extends OjResponseParam {
     public static class OjData {
         private String token;
         private Integer userId;
-        private String userName;
-        private String userType;
+        private String avatar;
+        private String username;
+        private String admin_type;
     }
 }

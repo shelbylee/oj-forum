@@ -99,14 +99,8 @@ public class ContestService {
         Preconditions.checkNotNull(param.getContestId(), "必须绑定contest id！");
         Preconditions.checkNotNull(param.getProblemId(), "必须绑定problem id！");
 
-        // 1为允许
-        if (param.getDiscussStatus() == 1) {
-            // 正常创建topic
-            topicService.buildTopic(param, topic);
-            topicMapper.insert(topic);
-        }
         // 0为禁止
-        else if (param.getDiscussStatus() == 0) {
+        if (param.getDiscussStatus() == 1) {
             // 判断用户身份
             // user type:   Regular User, Admin, Super Admin
             String userType = userService.getUserType();
@@ -119,6 +113,14 @@ public class ContestService {
                 topicService.buildTopic(param, topic);
                 topicMapper.insert(topic);
             }
+        }
+        // 1为允许
+        else {
+            // 默认允许讨论
+            saveDiscussStatus(param.getContestId(), 1);
+            // 正常创建topic
+            topicService.buildTopic(param, topic);
+            topicMapper.insert(topic);
         }
 
         return topic;
